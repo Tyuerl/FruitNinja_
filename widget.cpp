@@ -3,126 +3,99 @@
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::Widget)
+    , mlsUi(new Ui::Widget)
 {
-    ui->setupUi(this);
-    qDebug() << "YOU CLICKED";
-    ui->graphicsView->setEnabled(true);
-    ui->graphicsView->setHidden(true);
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setFixedSize(1024, 576);
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-
-    scene = new QGraphicsScene();
-    scene->setSceneRect(0, 0, 1024, 576);
-    ui->graphicsView->setScene(scene);
-    ui->graphicsView->setBackgroundBrush(QColor(210, 105, 30));
-
-    ui->load->setHidden(true);
-    ui->bestresult->setHidden(true);
-    ui->label_2->setHidden(true);
-    //
-
-
+    mlsUi->setupUi(this);
+    qDebug() << "YOU RUN APP";
+    mlsUi->graphicsView->setEnabled(true);
+    mlsUi->graphicsView->setHidden(true);
+    mlsUi->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mlsUi->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mlsUi->graphicsView->setFixedSize(1024, 576);
+    mlsUi->graphicsView->setRenderHint(QPainter::Antialiasing);
+    mlsScene = new QGraphicsScene();
+    mlsScene->setSceneRect(0, 0, 1024, 576);
+    mlsUi->graphicsView->setScene(mlsScene);
+    mlsUi->graphicsView->setBackgroundBrush(BROWN);
+    mlsUi->bestresult->setHidden(true);
+    mlsUi->bestresult->setHidden(true);
+    mlsUi->graphicsView->setHidden(false);
+    mlsFruit.push_back(new IsApple());
+    mlsScene->addItem(mlsFruit[0]);
+    mlsHp = 5;
+    mlsPoint = 0;
+    mlsScene->addText("HP: \nPOINTS:", QFont("Arial", 20));
+    std::ifstream in;
+    in.open("C:/Users/Tyu/Documents/FruitNinja_/rec.txt");
+    QString s;
+    std:: string t;
+    std::getline(in, t);
+    mlsRecord = std::stoi(t);
 
 }
 
-void Widget::GeneratorFruit()
+void Widget::isGeneratorFruit()
 {
 
     std:: srand(std::time(0));
     if (rand() % 2)
     {
-        arbuz.push_front(*new Watermelon());
-        scene->addItem(&arbuz[0]);
+        mlsFruit.push_front(new IsWatermelon());
+
     }
     else
     {
-        redApple.push_front(*new Apple());
-        scene->addItem(&redApple[0]);
+       mlsFruit.push_front(new IsApple());
     }
+    mlsScene->addItem(mlsFruit[0]);
 //    qDebug() << "opopopopopo";
     //
 
 }
 
-void Widget::AnimationFruit()
+void Widget::isAnimationFruit()
 {
-    ui->hp->setNum(hp);
-    ui->points->setNum((point));
-    if (hp)
+    mlsScene->update();
+    if (mlsHp > 0)
     {
-        for(int i = 0; i < redApple.size(); i++)
+        for(int i = 0; i < mlsFruit.size(); i++)
         {
-            if (redApple[i].IsAlive() == -1)
+            if (mlsFruit[i]->isAlive(0) == IsFruit::isDamaging)
             {
-                //free (&redApple[i]); фришить или делитать не надо, тк removeat сам запускает деструктор
-                hp -=redApple[i].Hp();
-                redApple.removeAt(i);
+                //free (&mlsFruit[i]); фришить или делитать не надо, тк removeat сам запускает деструктор
+                mlsHp -= mlsFruit[i]->isHp();
+                mlsScene->removeItem(mlsFruit[i]);
+                mlsFruit.removeAt(i);
             }
-            else if (redApple[i].IsAlive() == 2)
+            else if (mlsFruit[i]->isAlive(0) == IsFruit::isPoint)
             {
-                point += redApple[i].Hp();
-                redApple[i].setAlive(3);
+                mlsPoint+= mlsFruit[i]->isHp();
+                mlsFruit[i]->isSetAlive(IsFruit::isCutting);
             }
-            else if (redApple[i].IsAlive() == 0)
+            else if (mlsFruit[i]->isAlive(0) == IsFruit::isDeleting)
             {
-                redApple.removeAt(i);
+                mlsScene->removeItem(mlsFruit[i]);
+                mlsFruit.removeAt(i);
             }
             else
-                redApple[i].Move();
-        }
-        for(int i = 0; i < arbuz.size(); i++)
-        {
-            if (arbuz[i].IsAlive() == -1)
-            {
-                //free (&arbuz[i]); фришить или делитать не надо, тк removeat сам запускает деструктор
-                hp -= arbuz[i].Hp();
-                arbuz.removeAt(i);
-            }
-            else if (arbuz[i].IsAlive() == 2)
-            {
-                point+= arbuz[i].Hp();
-                arbuz[i].setAlive(3);
-            }
-            else if (arbuz[i].IsAlive() == 0)
-            {
-                arbuz.removeAt(i);
-            }
-            else
-                arbuz[i].Move();
+                mlsFruit[i]->isMove();
         }
     }
     else // конец игры собсна
     {
-        hp = 0;
-        redApple.clear();
-        arbuz.clear();
-        gameTime->stop();
-        animationTimer->stop();
-        scene->clear();
-       // ui->graphicsView->close();
-        ui->buttonstart->setHidden(false);
-        ui->graphicsView->setHidden(true);
-        ui->label_2->setHidden(false);
-        if (record <  point)
-        {
-            ui->load->setHidden(false);
-            ui->bestresult->setHidden(false);
-        }
+        isGameEnd();
     }
-    qDebug() << "artwork";
-    scene->update();
+    mlsUi->hp->setNum(mlsHp);
+    mlsUi->points->setNum((mlsPoint));
 }
 
 
 Widget::~Widget()
 {
-    delete scene;
-    delete gameTime;
-    delete animationTimer;
-    delete ui;
+    delete mlsScene;
+    delete mlsGameTime;
+    delete mlsAnimationTimer;
+    delete mlsUi;
 
 }
 
@@ -132,47 +105,75 @@ void Widget::resizeEvent(QResizeEvent *event)
 
 }
 
+void Widget::isGameStart()
+{
+
+        mlsGameTime = new QTimer();
+        mlsAnimationTimer = new QTimer();
+
+    connect (mlsGameTime, SIGNAL(timeout()),
+    this, SLOT(isGeneratorFruit()));
+    connect (mlsAnimationTimer, SIGNAL(timeout()),
+    this, SLOT(isAnimationFruit()));
+    mlsGameTime->start(800);
+    mlsAnimationTimer->start(1000 / 40);
+    mlsHp = 5;
+    mlsPoint = 0;
+}
+
+void Widget::isGameEnd()
+{
+    mlsHp = 0;
+    mlsFruit.clear();
+    mlsGameTime->stop();
+    mlsAnimationTimer->stop();
+    mlsScene->clear();
+    delete mlsGameTime;
+    delete mlsAnimationTimer;
+    mlsGameTime = nullptr;
+    mlsAnimationTimer = nullptr;
+    //mlsUi->graphicsView->setHidden(true);
+    if (mlsRecord <  mlsPoint)
+    {
+  //      mlsUi->bestresult->setHidden(false);
+    }
+    emit isToRecord();
+}
+
 
 void Widget::on_buttonstart_clicked()
 {
-    ui->label->setEnabled(false);
-    ui->load->setHidden(true);
-    ui->bestresult->setHidden(true);
-    ui->buttonstart->setHidden(true);
-    ui->graphicsView->setHidden(false);
-    redApple.push_back(*new Apple());
-    scene->addItem(&redApple[0]);
-    arbuz.push_back((*new Watermelon()));
-    scene->addItem(&(arbuz[0]));
 
-    hp = 50;
-    point = 0;
-    gameTime        = new QTimer(this);
-    animationTimer  = new QTimer(this);
-        connect (gameTime, SIGNAL(timeout()),
-    this, SLOT(GeneratorFruit()));
-        connect (animationTimer, SIGNAL(timeout()),
-    this, SLOT(AnimationFruit()));
-    gameTime->start(800);
-    animationTimer->start(1000 / 40);
-    scene->addText("HP: \nPOINTS:", QFont("Arial", 20));
+    mlsUi->bestresult->setHidden(true);
+    mlsUi->graphicsView->setHidden(false);
+    mlsFruit.push_back(new IsApple());
+    mlsScene->addItem(mlsFruit[0]);
+    mlsGameTime        = new QTimer(this);
+    mlsAnimationTimer  = new QTimer(this);
+    mlsHp = 50;
+    mlsPoint = 0;
+    connect (mlsGameTime, SIGNAL(timeout()),
+    this, SLOT(isGeneratorFruit()));
+    connect (mlsAnimationTimer, SIGNAL(timeout()),
+    this, SLOT(isAnimationFruit()));
 
-    std::ifstream in;
-    in.open("C:/Users/Tyu/Documents/FruitNinja_/Record.txt");
-    QString s;
-    std:: string t;
-    std::getline(in, t);
-    record = std::stoi(t);
-    ui->label_2->setText("RECORD: " + QString::number(record));
+    mlsScene->addText("HP: \nPOINTS:", QFont("Arial", 20));
+
+  //  std::ifstream in;
+  //  in.open("C:/Users/Tyu/Documents/FruitNinja_/rec.txt");
+   // QString s;
+   // std:: string t;
+   // std::getline(in, t);
+  //  mlsRecord = std::stoi(t);
 }
 
 void Widget::on_load_clicked()
 {
-    std::ofstream out;
-    out.open("C:/Users/Tyu/Documents/FruitNinja_/Record.txt");
-    if (out.is_open())
-    {
-        out << point;
-    }
-    out.close();
+ //   std::ofstream out;
+//    out.open("C:/Users/Tyu/Documents/FruitNinja_/rec.txt");
+   // if (out.is_open())
+  //  {
+ //       out << mlsPoint;
+ //   }
+ //   out.close();
 }

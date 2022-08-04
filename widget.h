@@ -28,29 +28,31 @@ class Widget : public QWidget
     Q_OBJECT
 
 public:
-    Widget(QWidget *parent = nullptr);
-    ~Widget();
-    void                on_pushButton_clicked();
+                        Widget(QWidget *parent = nullptr);
+                        ~Widget();
+    void                isOn_pushButton_clicked();
     void                resizeEvent(QResizeEvent *event) override;
+    void                isGameStart();
+    void                isGameEnd();
 
 private slots:
-    void    AnimationFruit();
-    void    GeneratorFruit();
+    void                isAnimationFruit();
+    void                isGeneratorFruit();
+    void                on_buttonstart_clicked();
+    void                on_load_clicked();
 
-    void on_buttonstart_clicked();
-
-    void on_load_clicked();
+signals:
+    void isToRecord();
 
 private:
-    Ui::Widget          *ui;
-    int                 sizeFruit_;
-    QGraphicsScene      *scene;
-    QTimer              *gameTime;
-    QTimer              *animationTimer;
-    QList<Apple>        redApple;
-    QList<Watermelon>   arbuz;
-    int                 hp = 20;
-    int                 point = 0;
-    int                 record;
+    Ui::Widget          *mlsUi;
+    int                 mlsSizeFruit_;
+    QGraphicsScene      *mlsScene;
+    QTimer              *mlsGameTime;
+    QTimer              *mlsAnimationTimer;
+    QList<IsFruit*>     mlsFruit;
+    int                 mlsHp = 20;
+    int                 mlsPoint = 0;
+    int                 mlsRecord;
 };
 #endif // WIDGET_H

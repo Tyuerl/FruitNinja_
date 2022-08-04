@@ -3,13 +3,12 @@
 
 #include "fruit.h"
 
-class Watermelon : public Fruit
+class IsWatermelon : public IsFruit
 {
 public:
-    Watermelon();
-    Watermelon(int x, int y);
-    ~Watermelon();
-    void    Move() override;
+            IsWatermelon();
+            IsWatermelon(int x, int y);
+            ~IsWatermelon();
     QRectF  boundingRect() const override;
     void    paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                   QWidget *widget = nullptr) override;

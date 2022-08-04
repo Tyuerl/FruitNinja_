@@ -2,15 +2,12 @@
 #define APPLE_H
 #include "fruit.h"
 
-
-
-class Apple :public Fruit
+class IsApple :public IsFruit
 {
 public:
-    Apple();
-    Apple(int x, int y);
-    ~Apple();
-    void    Move() override;
+            IsApple();
+            IsApple(int x, int y);
+            ~IsApple();
     QRectF  boundingRect() const override;
     void    paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                   QWidget *widget = nullptr) override;
