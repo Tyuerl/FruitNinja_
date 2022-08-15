@@ -15,58 +15,54 @@
 #include <QTimer>
 #include <ctime>
 
-#define WIDTH 1024
-#define HEIGHT 576
-#define SIZE WIDTH/12
+const int               WIDTH   = 1024;
+const int               HEIGHT  = 576;
+const int               SIZE    = WIDTH / 12;
+const QColor            BROWN   = QColor(210, 105, 30);
+const QColor            RED     = QColor(255, 0, 0);
 //Интерфейс для всех фруктов
-class Fruit : public QGraphicsItem
+class IsFruit : public QGraphicsItem
 {
 public:
-    Fruit();
-    Fruit(int x, int y, QString name, int dely,
-          int delx, int g, int rot, QColor clr, int hp);
-    Fruit(const Fruit& go);
+                        IsFruit();
+                        IsFruit(int x, int y, QString name, int dely,
+                                int delx, int g, int rot, QColor clr, int hp);
+                        IsFruit(const IsFruit& go);
+                        ~IsFruit();
+    enum                enState {isMoving, isCutting, isDeleting, isDamaging, isPoint};
+    int                 isAlive(bool thisForMoving);
+    void                isSetAlive(int n)   {mlsAlive = n;};
+    void                isMove();
+    virtual QRectF      boundingRect() const override;
+    virtual IsFruit&    operator =(const IsFruit& go);
+    virtual IsFruit*    Copy() const;
     virtual void        paint(QPainter *painter,
                             const QStyleOptionGraphicsItem *option,
                             QWidget *widget = nullptr) override;
-    virtual void        Move();
-  //virtual void        Slayer();
-    virtual QRectF      boundingRect() const override;
-    int                 IsAlive();
-    virtual Fruit*      Copy() const;
-    virtual Fruit&      operator =(const Fruit& go);
-    void    setAlive(int n)   {alive = n;};
-    //virtual           void advance(int phase) override;
-
-
-
 protected:
-    int                 posX_;
-    int                 posY_;
-    QString             name_;
-    int                 deltaY_;
-    int                 deltaX_;
-    int                 gravitation;
-    int                 rotation;
-    QColor              color;
-    int                 hp;
-    int                alive; // -1 - need delete, 1 - exist, 2 - player destroy this fruit
+    int                 mlsPosX_;
+    int                 mlsPosY_;
+    QString             mlsName_;
+    int                 mlsDeltaY_;
+    int                 mlsDeltaX_;
+    int                 mlsGravitation;
+    int                 mlsRotation;
+    QColor              mlsColor;
+    int                 mlsHp;
+    int                 mlsAlive; // -1 - need delete, 1 - exist, 2 - player destroy this IsFruit
 public:
-    int     Posx()          const   {return posX_;};
-    int     Posy()          const   {return posY_;};
-    int     DeltaY()        const   {return deltaY_;};
-    int     DeltaX()        const   {return deltaX_;};
-    int     Gravitation()   const   {return gravitation;};
-    int     Hp()            const   {return hp;};
-    int     Rotation ()     const   {return rotation;};
-    QString Name ()         const   {return name_;};
-    QColor  Color ()        const   {return color;};
-    int     Alive()         const   {return (alive);};
-
-
-    // QGraphicsItem interface
+    int                 isPosx()          const   {return mlsPosX_;};
+    int                 isPosy()          const   {return mlsPosY_;};
+    int                 isDeltaY()        const   {return mlsDeltaY_;};
+    int                 isDeltaX()        const   {return mlsDeltaX_;};
+    int                 isGravitation()   const   {return mlsGravitation;};
+    int                 isHp()            const   {return mlsHp;};
+    int                 isRotation ()     const   {return mlsRotation;};
+    QString             isName ()         const   {return mlsName_;};
+    QColor              isColor ()        const   {return mlsColor;};
+    int                 isAlive()         const   {return (mlsAlive);};
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void                mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 };
 

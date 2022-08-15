@@ -1,33 +1,33 @@
 #include "watermelon.h"
 
 
-Watermelon::Watermelon()  :Fruit()
+IsWatermelon::IsWatermelon()  :IsFruit()
 {
-    name_ = "Watermelon";
-    color = QColor(Qt::green);
-    this->setPos(posX_, posY_);
-    hp = 10;
+    mlsName_ = "Watermelon";
+    mlsColor = QColor(Qt::green);
+    this->setPos(mlsPosX_, mlsPosY_);
+    mlsHp = 10;
 }
 
 
-Watermelon::Watermelon(int x, int y)  :Fruit()
+IsWatermelon::IsWatermelon(int x, int y)  :IsFruit()
 {
-    name_ = "Red Watermelon";
-    color = QColor(Qt::yellow);
+    mlsName_ = "Red IsWatermelon";
+    mlsColor = QColor(Qt::yellow);
     this->setPos(x, y);
 }
 
-Watermelon::~Watermelon()
+IsWatermelon::~IsWatermelon()
 {
 }
 
-void Watermelon::paint(QPainter *painter,
+void IsWatermelon::paint(QPainter *painter,
                   const QStyleOptionGraphicsItem *option,
                   QWidget *widget)
 {
     (void) option;
     (void) widget;
-    if ((alive == 1) && pos() != QPointF(0, 0))
+    if ((mlsAlive == isMoving) && pos() != QPointF(0, 0))
     {
 
         painter->setBrush(QColor(1, 50, 32)); // темнозеленый
@@ -50,7 +50,7 @@ void Watermelon::paint(QPainter *painter,
      //   painter->setPen(treePen);
       //  painter->drawLine(tree);
     }
-    else if(alive == 3)
+    else if(mlsAlive == isCutting)
     {
         painter->setBrush(QColor(1, 50, 32)); // темнозеленый
         painter->drawEllipse(0, 0, SIZE, SIZE - 10);
@@ -64,13 +64,8 @@ void Watermelon::paint(QPainter *painter,
     }
 }
 
-QRectF Watermelon::boundingRect() const
+QRectF IsWatermelon::boundingRect() const
 {
-    return (Fruit::boundingRect());
+    return (IsFruit::boundingRect());
 }
 
-void    Watermelon::Move ()
-{
-    Fruit::Move();
-
-}

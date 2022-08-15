@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,17 +19,25 @@ SOURCES += \
     apple.cpp \
     fruit.cpp \
     main.cpp \
+    menuwidget.cpp \
+    recordwidget.cpp \
     watermelon.cpp \
     widget.cpp
 
 HEADERS += \
     apple.h \
     fruit.h \
+    menuwidget.h \
+    recordwidget.h \
     watermelon.h \
     widget.h
 
 FORMS += \
+    menuwidget.ui \
+    recordwidget.ui \
     widget.ui
+
+#win32:RC_FILE = file.rc само появилось каким-то чудом, но  и без него все работает прекрасно
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -37,4 +45,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Record.txt
+    rec.txt \
+    record.txt
