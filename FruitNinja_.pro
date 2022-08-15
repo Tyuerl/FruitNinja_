@@ -37,7 +37,7 @@ FORMS += \
     recordwidget.ui \
     widget.ui
 
-win32:RC_FILE = file.rc
+#win32:RC_FILE = file.rc само появилось каким-то чудом, но  и без него все работает прекрасно
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

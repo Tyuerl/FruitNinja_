@@ -14,6 +14,7 @@
 #include <QTimer>
 #include "apple.h"
 #include "watermelon.h"
+#include "recordwidget.h"
 #include <QDebug>
 #include <iostream>
 #include <fstream>
@@ -34,6 +35,7 @@ public:
     void                resizeEvent(QResizeEvent *event) override;
     void                isGameStart();
     void                isGameEnd();
+    int                 isRecord();
 
 private slots:
     void                isAnimationFruit();
@@ -43,6 +45,7 @@ private slots:
 
 signals:
     void isToRecord();
+    void isToMenu();
 
 private:
     Ui::Widget          *mlsUi;

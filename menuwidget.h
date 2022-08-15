@@ -7,6 +7,11 @@
 #include <QStackedWidget>
 #include <QTcpSocket>
 #include <QDataStream>
+#include <QDebug>
+#include <QDir>
+#include <iostream>
+#include <ctime>
+#include <string>
 const int           MENU_PAGE     = 0;
 const int           GAME_PAGE     = 1;
 const int           RECORD_PAGE   = 2;

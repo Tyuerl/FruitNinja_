@@ -1,6 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
-
+#include <QDir>
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , mlsUi(new Ui::Widget)
@@ -17,20 +17,13 @@ Widget::Widget(QWidget *parent)
     mlsScene->setSceneRect(0, 0, 1024, 576);
     mlsUi->graphicsView->setScene(mlsScene);
     mlsUi->graphicsView->setBackgroundBrush(BROWN);
-    mlsUi->bestresult->setHidden(true);
-    mlsUi->bestresult->setHidden(true);
     mlsUi->graphicsView->setHidden(false);
     mlsFruit.push_back(new IsApple());
     mlsScene->addItem(mlsFruit[0]);
-    mlsHp = 5;
+    mlsHp = 50;
     mlsPoint = 0;
-    mlsScene->addText("HP: \nPOINTS:", QFont("Arial", 20));
-    std::ifstream in;
-    in.open("C:/Users/Tyu/Documents/FruitNinja_/rec.txt");
-    QString s;
-    std:: string t;
-    std::getline(in, t);
-    mlsRecord = std::stoi(t);
+    mlsAnimationTimer = NULL;
+    mlsGameTime = NULL;
 
 }
 
@@ -93,8 +86,10 @@ void Widget::isAnimationFruit()
 Widget::~Widget()
 {
     delete mlsScene;
-    delete mlsGameTime;
-    delete mlsAnimationTimer;
+    if (mlsGameTime != NULL)
+        delete mlsGameTime;
+    if (mlsAnimationTimer != NULL)
+        delete mlsAnimationTimer;
     delete mlsUi;
 
 }
@@ -107,9 +102,9 @@ void Widget::resizeEvent(QResizeEvent *event)
 
 void Widget::isGameStart()
 {
-
-        mlsGameTime = new QTimer();
-        mlsAnimationTimer = new QTimer();
+    mlsScene->addText("HP: \nPOINTS:\n", QFont("Arial", 10));
+    mlsGameTime = new QTimer();
+    mlsAnimationTimer = new QTimer();
 
     connect (mlsGameTime, SIGNAL(timeout()),
     this, SLOT(isGeneratorFruit()));
@@ -119,6 +114,29 @@ void Widget::isGameStart()
     mlsAnimationTimer->start(1000 / 40);
     mlsHp = 5;
     mlsPoint = 0;
+
+    std::ifstream in;
+    in.open("rec.txt");
+    //in.open(QDir::currentPath().QString::toStdString() + "/rec.txt");
+    QString s;
+    std:: string t;
+    int isCounterSpaces = 0;
+    getline(in, t);
+    int i = t.length();
+    s += QString::fromStdString(t);
+    while (isCounterSpaces < 3)
+    {
+        if (t[i] == ' ')
+            isCounterSpaces++;
+
+        if (isCounterSpaces == 3)
+        {
+            mlsRecord = std::stoi(&(t[i]));
+        }
+        i--;
+    }
+    in.close();
+    qDebug() << mlsRecord;
 }
 
 void Widget::isGameEnd()
@@ -130,21 +148,23 @@ void Widget::isGameEnd()
     mlsScene->clear();
     delete mlsGameTime;
     delete mlsAnimationTimer;
-    mlsGameTime = nullptr;
-    mlsAnimationTimer = nullptr;
-    //mlsUi->graphicsView->setHidden(true);
+    mlsGameTime = NULL;
+    mlsAnimationTimer = NULL;
     if (mlsRecord <  mlsPoint)
-    {
-  //      mlsUi->bestresult->setHidden(false);
-    }
-    emit isToRecord();
+        emit isToRecord();
+    else
+        emit isToMenu();
+}
+
+int Widget::isRecord()
+{
+    return (mlsPoint);
 }
 
 
 void Widget::on_buttonstart_clicked()
 {
 
-    mlsUi->bestresult->setHidden(true);
     mlsUi->graphicsView->setHidden(false);
     mlsFruit.push_back(new IsApple());
     mlsScene->addItem(mlsFruit[0]);
